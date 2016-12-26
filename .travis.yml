@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+  - '4.4.4'
+before_install:
+  - openssl aes-256-cbc -K $encrypted_f78d40ef24a4_key -iv $encrypted_f78d40ef24a4_iv
+    -in id_rsa.enc -out ~/.ssh/id_rsa -d
+  - chmod 600 ~/.ssh/id_rsa
+  - echo -e "Host 101.200.63.93\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+script:
+  - npm run test
+after_success:
+  - npm run build
+  - cd dist
+  - tar -jcf indoor-web.tar.bz2 *
+  - scp indoor-web.tar.bz2 jingsam@101.200.63.93:~/
+  - ssh jingsam@101.200.63.93 'tar -jxf indoor-web.tar.bz2 -C indoor-server/public'

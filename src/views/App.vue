@@ -1,12 +1,18 @@
 <template>
   <div class="app">
-    <i-Header></i-Header>
-    <Map :access-token="accessToken" :options="options"><Map>
+    <Row class="header">
+      <i-Header></i-Header>
+    </Row>
+    <Row class="main">
+      <i-Col span="18"><Map :access-token="accessToken" :options="options"><Map></i-Col>
+      <i-Col span="6"><Panel></Panel></i-Col>
+    </Row>
   </div>
 </template>
 
 <script>
 import iHeader from './Header'
+import Panel from './Panel'
 
 export default {
   data() {
@@ -15,26 +21,46 @@ export default {
       options: {
         style: 'mapbox://styles/maper/ciwvpz28c002z2qpqxdg2m5cy',
         attributionControl: false,
-        center: [112.521531, -0.006674],
-        zoom: 10.4,
-        bearing: -60,
-        pitch: 50
+        center: [112.527964, 0.009984],
+        zoom: 10.5,
+        bearing: -70,
+        pitch: 40
       }
     }
   },
 
   components: {
-    iHeader
+    iHeader,
+    Panel
   }
 }
 
 </script>
 
+<style>
+html, body {
+  height: 100%;
+}
+
+/** {
+  outline: red solid 1px;
+}*/
+</style>
+
 <style scoped>
 .app {
-  position:absolute;
-  top:0;
-  bottom:0;
-  width:100%;
+  height: 100%;
+}
+
+.header {
+  height: 40px;
+}
+
+.main {
+  height: calc(100% - 40px);
+}
+
+.main > * {
+  height: 100%;
 }
 </style>
