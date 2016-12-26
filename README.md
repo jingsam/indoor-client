@@ -1,5 +1,7 @@
 # indoor-web
 
+[![Build Status](https://travis-ci.org/jingsam/indoor-web.svg?branch=master)](https://travis-ci.org/jingsam/indoor-web)
+
 > Indoor maps web client
 
 ## Build Setup
