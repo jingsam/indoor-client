@@ -24,7 +24,7 @@ export default {
     mapboxgl.accessToken = this.accessToken
     this.options.container = this.$el
     const map = new mapboxgl.Map(this.options)
-    map.addControl(new mapboxgl.NavigationControl())
+    map.addControl(new mapboxgl.NavigationControl(), 'top-left')
   }
 }
 </script>

@@ -7,7 +7,10 @@
         <Date-picker type="daterange" placeholder="选择统计时段" :options="options"></Date-picker>
       </i-col>
       <i-col class="right" span="4">
-        <i-Button>APP下载</i-Button>
+        <Poptip trigger="hover" placement="bottom">
+          <i-button><a href="/app-debug.apk">APP 下载</a></i-button>
+          <img slot="content" src="../assets/QR.png">
+        </Poptip>
       </i-col>
   </Row>
 </template>
@@ -63,5 +66,11 @@ h1 {
 .right {
   display: flex;
   justify-content: flex-end;
+}
+
+img {
+  display: block;
+  height: 200px;
+  width: 200px;
 }
 </style>
