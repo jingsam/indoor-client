@@ -13,4 +13,4 @@ after_success:
   - cd dist
   - tar -jcf indoor-web.tar.bz2 *
   - scp indoor-web.tar.bz2 jingsam@101.200.63.93:~/
-  - ssh jingsam@101.200.63.93 'tar -jxf indoor-web.tar.bz2 -C indoor-server/public'
+  - ssh jingsam@101.200.63.93 'tar -jxf indoor-web.tar.bz2 -C ~/indoor-server/public'
