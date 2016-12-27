@@ -5,24 +5,23 @@
     </Row>
     <Row class="main">
       <i-Col span="18">
-        <Radio-group :model="'散点图'" type="button" class="group">
-          <Radio value="散点图"></Radio>
-          <Radio value="轨迹图"></Radio>
-          <Radio value="热区图"></Radio>
-        </Radio-group>
         <Map :access-token="accessToken" :options="options"><Map>
       </i-Col>
-      <i-Col span="6"><Panel></Panel></i-Col>
+      <i-Col span="6">
+        <Panel></Panel>
+      </i-Col>
     </Row>
   </div>
 </template>
 
 <script>
 import iHeader from './Header'
+import Map from './Map'
 import Panel from './Panel'
 
+
 export default {
-  data() {
+  data () {
     return {
       accessToken: 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2l3dm9qdzRiMDAxMTJ6cGY2ZHlzOTRvNCJ9.WcJV0GCgk_4XXHa8cnmi_Q',
       options: {
@@ -38,6 +37,7 @@ export default {
 
   components: {
     iHeader,
+    Map,
     Panel
   }
 }
@@ -70,13 +70,5 @@ html, body {
 
 .main > * {
   height: 100%;
-}
-
-.group {
-  position: absolute;
-  z-index: 1;
-  top: 20px;
-  left: 50%;
-  transform: translate(-50%)
 }
 </style>

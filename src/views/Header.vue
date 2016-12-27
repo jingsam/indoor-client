@@ -4,7 +4,7 @@
         <h1>室内地图分析系统</h1>
       </i-col>
       <i-col span="6">
-        <Date-picker type="daterange" placeholder="选择统计时段" :options="options"></Date-picker>
+        <Date-picker type="daterange" placeholder="选择统计时段" :options="options" @on-change="handleChange"></Date-picker>
       </i-col>
       <i-col class="right" span="4">
         <Poptip trigger="hover" placement="bottom">
@@ -17,12 +17,12 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       options: {
         shortcuts: [{
           text: '最近一周',
-          value() {
+          value () {
             const end = new Date()
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
@@ -30,7 +30,7 @@ export default {
           }
         }, {
           text: '最近一个月',
-          value() {
+          value () {
             const end = new Date()
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
@@ -38,7 +38,7 @@ export default {
           }
         }, {
           text: '最近三个月',
-          value() {
+          value () {
             const end = new Date()
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
@@ -46,6 +46,16 @@ export default {
           }
         }]
       }
+    }
+  },
+
+  methods: {
+    handleChange (daterange) {
+      const range = daterange.split(' - ')
+      this.$store.dispatch('fetchLocations', {
+        start: range[0] || 0,
+        end: range[1] || 0
+      })
     }
   }
 }
