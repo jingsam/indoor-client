@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import moment from 'moment'
+
 export default {
   data () {
     return {
@@ -52,10 +54,10 @@ export default {
   methods: {
     handleChange (daterange) {
       const range = daterange.split(' - ')
-      this.$store.dispatch('fetchLocations', {
-        start: range[0] || 0,
-        end: range[1] || 0
-      })
+      const start = range[0] ? moment(range[0]).format() : 0
+      const end = range[1] ? moment(range[1]).endOf('day').format() : 0
+
+      this.$store.dispatch('fetchLocations', {start, end})
     }
   }
 }

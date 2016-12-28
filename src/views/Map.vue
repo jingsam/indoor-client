@@ -42,7 +42,7 @@ export default {
   },
 
   watch: {
-    view: value => {
+    view (value) {
       switch (value) {
         case '散点图':
           this.showScatterMap()
