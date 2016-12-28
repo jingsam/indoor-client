@@ -59,7 +59,70 @@ export default {
 
   methods: {
     showScatterMap () {
-      //
+      const features = []
+      this.$store.state.locations.forEach((location) => {
+        features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [location.lng, location.lat]
+          },
+          properties: {
+            deviceId: location.deviceId,
+            createdAt: location.createdAt,
+            updatedAt: location.updatedAt
+          }
+        })
+      })
+
+      const data = {
+        type: 'FeatureCollection',
+        features
+      }
+
+      const source = map.getSource('scatter-source')
+      if (source) {
+        source.setData(data)
+      } else {
+        map.addSource('scatter-source', {
+          type: 'geojson',
+          data
+        })
+      }
+
+      const layer = map.getLayer('scatter-layer')
+      if (!layer) {
+        map.addLayer({
+          id: 'scatter-layer',
+          type: 'circle',
+          source: 'scatter-source',
+          paint: {
+            'circle-radius': 5,
+            'circle-color': '#0061ff',
+            'circle-stroke-color': '#fff',
+            'circle-stroke-width': 1
+          }
+        }, 'wall-base')
+      }
+
+      const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false
+      })
+
+      map.on('mousemove', function (e) {
+        const features = map.queryRenderedFeatures(e.point, {layers: ['scatter-layer']})
+        map.getCanvas().style.cursor = (features.length) ? 'pointer' : ''
+
+        if (!features.length) {
+          popup.remove()
+          return
+        }
+
+        popup.setLngLat(features[0].geometry.coordinates)
+          .setHTML(features[0].properties.deviceId)
+          .addTo(map)
+      })
     },
 
     showTrackMap () {

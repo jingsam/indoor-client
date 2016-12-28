@@ -11,7 +11,7 @@
 export default {
   computed: {
     start () {
-      return [this.$store.state.start, this.$store.state.end, this.$store.state.locations]
+      return [this.$store.state.start, this.$store.state.end]
     }
   }
 }
