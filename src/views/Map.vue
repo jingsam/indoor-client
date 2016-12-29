@@ -34,36 +34,6 @@ export default {
     }
   },
 
-  computed: {
-    source () {
-      const data = {
-        type: 'FeatureCollection',
-        features: []
-      }
-
-      if (this.view === '散点图') {
-        this.$store.state.locations.forEach((location) => {
-          data.features.push({
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [location.lng, location.lat]
-            },
-            properties: {
-              deviceId: location.deviceId,
-              createdAt: location.createdAt,
-              updatedAt: location.updatedAt
-            }
-          })
-        })
-
-        data.name = 'scatter-source'
-      }
-
-      return data
-    }
-  },
-
   ready () {
     mapboxgl.accessToken = this.accessToken
     this.options.container = this.$el
@@ -71,18 +41,44 @@ export default {
     map.addControl(new mapboxgl.NavigationControl(), 'top-left')
   },
 
-  watch: {
-    source (value) {
-      const source = map.getSource(value.name)
+  computed: {
+    source () {
+      const data = {
+        type: 'FeatureCollection',
+        features: []
+      }
+
+      this.$store.state.locations.forEach((location) => {
+        data.features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [location.lng, location.lat]
+          },
+          properties: {
+            deviceId: location.deviceId,
+            createdAt: location.createdAt,
+            updatedAt: location.updatedAt
+          }
+        })
+      })
+
+      const source = map.getSource('scatter-source')
       if (source) {
-        source.setData(value)
+        source.setData(data)
       } else {
-        map.addSource(value.name, {
+        map.addSource('scatter-source', {
           type: 'geojson',
-          data: value
+          data: data
         })
       }
 
+      return data
+    }
+  },
+
+  watch: {
+    source (value) {
       switch (this.view) {
         case '散点图':
           this.showScatterMap()
