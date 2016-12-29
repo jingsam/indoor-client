@@ -34,6 +34,36 @@ export default {
     }
   },
 
+  computed: {
+    source () {
+      const data = {
+        type: 'FeatureCollection',
+        features: []
+      }
+
+      if (this.view === '散点图') {
+        this.$store.state.locations.forEach((location) => {
+          data.features.push({
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: [location.lng, location.lat]
+            },
+            properties: {
+              deviceId: location.deviceId,
+              createdAt: location.createdAt,
+              updatedAt: location.updatedAt
+            }
+          })
+        })
+
+        data.name = 'scatter-source'
+      }
+
+      return data
+    }
+  },
+
   ready () {
     mapboxgl.accessToken = this.accessToken
     this.options.container = this.$el
@@ -42,15 +72,25 @@ export default {
   },
 
   watch: {
-    view (value) {
-      switch (value) {
+    source (value) {
+      const source = map.getSource(value.name)
+      if (source) {
+        source.setData(value)
+      } else {
+        map.addSource(value.name, {
+          type: 'geojson',
+          data: value
+        })
+      }
+
+      switch (this.view) {
         case '散点图':
           this.showScatterMap()
           break
         case '轨迹图':
           this.showTrackMap()
           break
-        case '热力图':
+        case '热区图':
           this.showHeatMap()
           break
       }
@@ -59,37 +99,6 @@ export default {
 
   methods: {
     showScatterMap () {
-      const features = []
-      this.$store.state.locations.forEach((location) => {
-        features.push({
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [location.lng, location.lat]
-          },
-          properties: {
-            deviceId: location.deviceId,
-            createdAt: location.createdAt,
-            updatedAt: location.updatedAt
-          }
-        })
-      })
-
-      const data = {
-        type: 'FeatureCollection',
-        features
-      }
-
-      const source = map.getSource('scatter-source')
-      if (source) {
-        source.setData(data)
-      } else {
-        map.addSource('scatter-source', {
-          type: 'geojson',
-          data
-        })
-      }
-
       const layer = map.getLayer('scatter-layer')
       if (!layer) {
         map.addLayer({
