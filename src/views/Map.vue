@@ -41,14 +41,40 @@ export default {
     map.addControl(new mapboxgl.NavigationControl(), 'top-left')
   },
 
-  computed: {
-    source () {
+  watch: {
+    view (value) {
+      switch (value) {
+        case '散点图':
+          map.setLayoutProperty('scatter-layer', 'visibility', 'visible')
+          // map.setLayoutProperty('track-layer', 'visibility', 'none')
+          // map.setLayoutProperty('heat-layer', 'visibility', 'none')
+          break
+        case '轨迹图':
+          map.setLayoutProperty('scatter-layer', 'visibility', 'none')
+          // map.setLayoutProperty('track-layer', 'visibility', 'visible')
+          // map.setLayoutProperty('heat-layer', 'visibility', 'none')
+          break
+        case '热区图':
+          map.setLayoutProperty('scatter-layer', 'visibility', 'none')
+          // map.setLayoutProperty('track-layer', 'visibility', 'none')
+          // map.setLayoutProperty('heat-layer', 'visibility', 'visible')
+          break
+      }
+    },
+
+    '$store.state.locations' (locations) {
+      this.addScatterLayer(locations)
+    }
+  },
+
+  methods: {
+    addScatterLayer (locations) {
       const data = {
         type: 'FeatureCollection',
         features: []
       }
 
-      this.$store.state.locations.forEach((location) => {
+      locations.forEach((location) => {
         data.features.push({
           type: 'Feature',
           geometry: {
@@ -73,34 +99,13 @@ export default {
         })
       }
 
-      return data
-    }
-  },
-
-  watch: {
-    source (value) {
-      switch (this.view) {
-        case '散点图':
-          this.showScatterMap()
-          break
-        case '轨迹图':
-          this.showTrackMap()
-          break
-        case '热区图':
-          this.showHeatMap()
-          break
-      }
-    }
-  },
-
-  methods: {
-    showScatterMap () {
       const layer = map.getLayer('scatter-layer')
       if (!layer) {
         map.addLayer({
           id: 'scatter-layer',
           type: 'circle',
           source: 'scatter-source',
+          visibility: this.view === '散点图' ? 'visible' : 'none',
           paint: {
             'circle-radius': 5,
             'circle-color': '#0061ff',
