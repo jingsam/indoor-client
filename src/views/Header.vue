@@ -4,7 +4,7 @@
         <h1>室内地图分析系统</h1>
       </i-col>
       <i-col span="6">
-        <Date-picker type="daterange" placeholder="选择统计时段" :options="options" @on-change="handleChange"></Date-picker>
+        <Date-picker type="daterange" :value="value" placeholder="选择统计时段" :options="options" @on-change="handleChange"></Date-picker>
       </i-col>
       <i-col class="right" span="4">
         <Poptip trigger="hover" placement="bottom">
@@ -48,6 +48,12 @@ export default {
           }
         }]
       }
+    }
+  },
+
+  computed: {
+    value () {
+      return [this.$store.state.start, this.$store.state.end]
     }
   },
 

@@ -64,6 +64,8 @@ export default {
 
     '$store.state.locations' (locations) {
       this.addScatterLayer(locations)
+      this.addTrackLayer(locations)
+      this.addHeatLayer(locations)
     }
   },
 
@@ -135,11 +137,11 @@ export default {
       })
     },
 
-    showTrackMap () {
+    addTrackLayer (locations) {
       //
     },
 
-    showHeatMap () {
+    addHeatLayer () {
       //
     }
   }
