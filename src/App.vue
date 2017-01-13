@@ -1,7 +1,7 @@
 <template>
   <div class="app">
     <i-Header class="header"></i-Header>
-    <Map class="map" :access-token="accessToken" :options="options"><Map>
+    <Map class="map" :access-token="accessToken" :options="options"></Map>
     <Panel class="panel"></Panel>
   </div>
 </template>
@@ -10,7 +10,6 @@
 import iHeader from './views/Header'
 import Map from './views/Map'
 import Panel from './views/Panel'
-
 
 export default {
   data () {
@@ -62,6 +61,8 @@ html, body {
 
 .panel {
   position: absolute;
-
+  right: 0;
+  top: 40px;
+  height: calc(100% - 40px);
 }
 </style>

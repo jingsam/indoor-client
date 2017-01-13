@@ -1,6 +1,5 @@
 <template>
-  <div class="map2">
-    <div class="mymap" v-el:map></div>
+  <div>
     <Radio-group class="radio-group" :model.sync="view" type="button" >
       <Radio value="散点图"></Radio>
       <Radio value="轨迹图"></Radio>
@@ -8,6 +7,7 @@
     </Radio-group>
   </div>
 </template>
+
 
 <script>
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
@@ -37,7 +37,7 @@ export default {
 
   ready () {
     mapboxgl.accessToken = this.accessToken
-    this.options.container = this.$els.map
+    this.options.container = this.$el
     map = new mapboxgl.Map(this.options)
     map.addControl(new mapboxgl.NavigationControl(), 'top-left')
   },
@@ -151,19 +151,16 @@ export default {
 
 
 <style scoped>
-div[class="map2"] {
+div {
   height: 300px;
-}
-
-.mymap {
-  width: 100%;
-  height: 100%;
 }
 
 .radio-group {
   position: absolute;
-  top: 20px;
+  top: 40px;
   left: 50%;
-  transform: translate(-50%)
+  transform: translate(-50%);
+  z-index: 1;
+  height: 30px;
 }
 </style>
