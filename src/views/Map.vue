@@ -40,6 +40,14 @@ export default {
     this.options.container = this.$el
     map = new mapboxgl.Map(this.options)
     map.addControl(new mapboxgl.NavigationControl(), 'top-left')
+    map.on('load', () => {
+      this.addScatterSource(this.$store.state.locations)
+      this.addScatterLayer()
+      this.addTrackSource(this.$store.state.locations)
+      this.addTrackLayer()
+      this.addHeatSource(this.$store.state.locations)
+      this.addHeatLayer()
+    })
   },
 
   watch: {
@@ -64,14 +72,14 @@ export default {
     },
 
     '$store.state.locations' (locations) {
-      this.addScatterLayer(locations)
-      this.addTrackLayer(locations)
-      this.addHeatLayer(locations)
+      this.addScatterSource(locations)
+      this.addTrackSource(locations)
+      this.addHeatSource(locations)
     }
   },
 
   methods: {
-    addScatterLayer (locations) {
+    addScatterSource (locations) {
       const data = {
         type: 'FeatureCollection',
         features: []
@@ -101,7 +109,9 @@ export default {
           data: data
         })
       }
+    },
 
+    addScatterLayer () {
       const layer = map.getLayer('scatter-layer')
       if (!layer) {
         map.addLayer({
@@ -138,7 +148,15 @@ export default {
       })
     },
 
-    addTrackLayer (locations) {
+    addTrackSource (locations) {
+      //
+    },
+
+    addTrackLayer () {
+      //
+    },
+
+    addHeatSource (locations) {
       //
     },
 

@@ -40,9 +40,9 @@ html, body {
   height: 100%;
 }
 
-* {
+/** {
   outline: red solid 1px;
-}
+}*/
 </style>
 
 <style scoped>
