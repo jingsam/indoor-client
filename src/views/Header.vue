@@ -1,18 +1,12 @@
 <template>
-  <Row class="header" type="flex" justify="space-between" align="middle">
-      <i-col span="4">
-        <h1>室内地图分析系统</h1>
-      </i-col>
-      <i-col span="6">
-        <Date-picker type="daterange" :value="value" placeholder="选择统计时段" :options="options" @on-change="handleChange"></Date-picker>
-      </i-col>
-      <i-col class="right" span="4">
-        <Poptip trigger="hover" placement="bottom">
-          <i-button><a href="/app-debug.apk">APP 下载</a></i-button>
-          <img slot="content" src="../assets/QR.png">
-        </Poptip>
-      </i-col>
-  </Row>
+  <header class="header">
+    <h1>室内地图分析系统</h1>
+    <Date-picker class="date-picker" type="daterange" :value="value" placeholder="选择统计时段" :options="options" @on-change="handleChange"></Date-picker>
+    <Poptip trigger="hover" placement="bottom-end">
+      <i-button><a href="/app-debug.apk">APP 下载</a></i-button>
+      <img slot="content" src="../assets/QR.png">
+    </Poptip>
+  </header>
 </template>
 
 <script>
@@ -69,10 +63,13 @@ export default {
 </script>
 
 <style scoped>
-.header {
-  height: 100%;
+header {
   background-color: #464c5b;
   padding: 0 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
 }
 
 h1 {
@@ -80,9 +77,8 @@ h1 {
   font-size: 16px;
 }
 
-.right {
-  display: flex;
-  justify-content: flex-end;
+.date-picker {
+  width: 300px;
 }
 
 img {
