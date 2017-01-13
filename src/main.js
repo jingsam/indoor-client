@@ -3,7 +3,7 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import Vue from 'vue'
 import iview from 'iview'
 import store from './store'
-import App from './views/App'
+import App from './App'
 
 Vue.use(iview)
 

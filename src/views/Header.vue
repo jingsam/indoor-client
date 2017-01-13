@@ -59,9 +59,8 @@ export default {
 
   methods: {
     handleChange (daterange) {
-      const range = daterange.split(' - ')
-      const start = range[0] ? moment(range[0]).format() : 0
-      const end = range[1] ? moment(range[1]).endOf('day').format() : 0
+      const start = daterange[0] ? moment(daterange[0]).format() : 0
+      const end = daterange[1] ? moment(daterange[1]).endOf('day').format() : 0
 
       this.$store.dispatch('fetchLocations', {start, end})
     }
