@@ -11,6 +11,8 @@
 
 <script>
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
+import groupBy from 'lodash/groupBy'
+import moment from 'moment'
 
 let map
 
@@ -55,17 +57,17 @@ export default {
       switch (value) {
         case '散点图':
           map.setLayoutProperty('scatter-layer', 'visibility', 'visible')
-          // map.setLayoutProperty('track-layer', 'visibility', 'none')
+          map.setLayoutProperty('track-layer', 'visibility', 'none')
           // map.setLayoutProperty('heat-layer', 'visibility', 'none')
           break
         case '轨迹图':
           map.setLayoutProperty('scatter-layer', 'visibility', 'none')
-          // map.setLayoutProperty('track-layer', 'visibility', 'visible')
+          map.setLayoutProperty('track-layer', 'visibility', 'visible')
           // map.setLayoutProperty('heat-layer', 'visibility', 'none')
           break
         case '热区图':
           map.setLayoutProperty('scatter-layer', 'visibility', 'none')
-          // map.setLayoutProperty('track-layer', 'visibility', 'none')
+          map.setLayoutProperty('track-layer', 'visibility', 'none')
           // map.setLayoutProperty('heat-layer', 'visibility', 'visible')
           break
       }
@@ -118,7 +120,9 @@ export default {
           id: 'scatter-layer',
           type: 'circle',
           source: 'scatter-source',
-          visibility: this.view === '散点图' ? 'visible' : 'none',
+          layout: {
+            visibility: this.view === '散点图' ? 'visible' : 'none'
+          },
           paint: {
             'circle-radius': 5,
             'circle-color': '#0061ff',
@@ -142,18 +146,97 @@ export default {
           return
         }
 
-        popup.setLngLat(features[0].geometry.coordinates)
+        popup.setLngLat(e.lngLat)
           .setHTML(features[0].properties.deviceId)
           .addTo(map)
       })
     },
 
     addTrackSource (locations) {
-      //
+      const groupedLocations = groupBy(locations, location => {
+        return moment(location.createdAt).format('YYYY-MM-DD')
+      })
+
+      Object.keys(groupedLocations).forEach(function (key) {
+        groupedLocations[key] = groupBy(groupedLocations[key], location => {
+          return location.deviceId
+        })
+      })
+
+      const tracks = []
+      Object.keys(groupedLocations).forEach(function (key1) {
+        Object.keys(groupedLocations[key1]).forEach(function (key2) {
+          tracks.push({
+            date: key1,
+            deviceId: key2,
+            locations: groupedLocations[key1][key2].sort((loc1, loc2) => {
+              return new Date(loc1) - new Date(loc2)
+            })
+          })
+        })
+      })
+
+      const data = {
+        type: 'FeatureCollection',
+        features: []
+      }
+
+      tracks.forEach((track) => {
+        data.features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: track.locations.map(location => [location.lng, location.lat])
+          },
+          properties: {
+            date: track.date,
+            deviceId: track.deviceId
+          }
+        })
+      })
+
+      const source = map.getSource('track-source')
+      if (source) {
+        source.setData(data)
+      } else {
+        map.addSource('track-source', {
+          type: 'geojson',
+          data: data
+        })
+      }
     },
 
     addTrackLayer () {
-      //
+      const layer = map.getLayer('track-layer')
+      if (!layer) {
+        map.addLayer({
+          id: 'track-layer',
+          type: 'line',
+          source: 'track-source',
+          layout: {
+            visibility: this.view === '轨迹图' ? 'visible' : 'none'
+          }
+        }, 'wall-base')
+      }
+
+      const popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false
+      })
+
+      map.on('mousemove', function (e) {
+        const features = map.queryRenderedFeatures(e.point, {layers: ['track-layer']})
+        map.getCanvas().style.cursor = (features.length) ? 'pointer' : ''
+
+        if (!features.length) {
+          popup.remove()
+          return
+        }
+
+        popup.setLngLat(e.lngLat)
+          .setHTML(features[0].properties.deviceId)
+          .addTo(map)
+      })
     },
 
     addHeatSource (locations) {

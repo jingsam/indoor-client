@@ -1,5 +1,5 @@
 <template>
-  <div class="app">
+  <div id="app">
     <i-Header class="header"></i-Header>
     <Map class="map" :access-token="accessToken" :options="options"></Map>
     <Panel class="panel"></Panel>
@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import iHeader from './views/Header'
-import Map from './views/Map'
-import Panel from './views/Panel'
+import iHeader from './components/Header'
+import Map from './components/Map'
+import Panel from './components/Panel'
 
 export default {
   data () {
@@ -46,7 +46,7 @@ html, body {
 </style>
 
 <style scoped>
-.app {
+#app {
   height: 100%;
 }
 
