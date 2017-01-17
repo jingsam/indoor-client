@@ -170,7 +170,7 @@ export default {
             date: key1,
             deviceId: key2,
             locations: groupedLocations[key1][key2].sort((loc1, loc2) => {
-              return new Date(loc1) - new Date(loc2)
+              return Date.parse(loc1.createdAt) - Date.parse(loc2.createdAt)
             })
           })
         })
