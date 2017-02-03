@@ -58,17 +58,17 @@ export default {
         case '散点图':
           map.setLayoutProperty('scatter-layer', 'visibility', 'visible')
           map.setLayoutProperty('track-layer', 'visibility', 'none')
-          // map.setLayoutProperty('heat-layer', 'visibility', 'none')
+          map.setLayoutProperty('heat-layer', 'visibility', 'none')
           break
         case '轨迹图':
           map.setLayoutProperty('scatter-layer', 'visibility', 'none')
           map.setLayoutProperty('track-layer', 'visibility', 'visible')
-          // map.setLayoutProperty('heat-layer', 'visibility', 'none')
+          map.setLayoutProperty('heat-layer', 'visibility', 'none')
           break
         case '热区图':
           map.setLayoutProperty('scatter-layer', 'visibility', 'none')
           map.setLayoutProperty('track-layer', 'visibility', 'none')
-          // map.setLayoutProperty('heat-layer', 'visibility', 'visible')
+          map.setLayoutProperty('heat-layer', 'visibility', 'visible')
           break
       }
     },
@@ -142,8 +142,7 @@ export default {
         map.getCanvas().style.cursor = (features.length) ? 'pointer' : ''
 
         if (!features.length) {
-          popup.remove()
-          return
+          return popup.remove()
         }
 
         popup.setLngLat(e.lngLat)
@@ -214,7 +213,14 @@ export default {
           type: 'line',
           source: 'track-source',
           layout: {
-            visibility: this.view === '轨迹图' ? 'visible' : 'none'
+            visibility: this.view === '轨迹图' ? 'visible' : 'none',
+            'line-cap': 'round',
+            'line-join': 'round'
+          },
+          paint: {
+            'line-color': '#0061ff',
+            'line-width': 5
+
           }
         }, 'wall-base')
       }
@@ -240,11 +246,64 @@ export default {
     },
 
     addHeatSource (locations) {
-      //
+      const data = {
+        type: 'FeatureCollection',
+        features: []
+      }
+
+      locations.forEach((location) => {
+        data.features.push({
+          type: 'Feature',
+          geometry: {
+            type: 'Point',
+            coordinates: [location.lng, location.lat]
+          },
+          properties: {
+            deviceId: location.deviceId,
+            createdAt: location.createdAt,
+            updatedAt: location.updatedAt,
+            count: 1
+          }
+        })
+      })
+
+      const source = map.getSource('heat-source')
+      if (source) {
+        source.setData(data)
+      } else {
+        map.addSource('heat-source', {
+          type: 'geojson',
+          data: data,
+          cluster: true,
+          clusterRadius: 20
+        })
+      }
     },
 
     addHeatLayer () {
-      //
+      const layer = map.getLayer('heat-layer')
+      if (!layer) {
+        map.addLayer({
+          id: 'heat-layer',
+          type: 'circle',
+          source: 'heat-source',
+          layout: {
+            visibility: this.view === '热区图' ? 'visible' : 'none'
+          },
+          paint: {
+            'circle-radius': 40,
+            'circle-color': {
+              property: 'count',
+              stops: [
+                [1, '#06f'],
+                [5, '#0f0'],
+                [10, '#f00']
+              ]
+            },
+            'circle-blur': 1
+          }
+        }, 'wall-base')
+      }
     }
   }
 }
@@ -252,10 +311,6 @@ export default {
 
 
 <style scoped>
-div {
-  height: 300px;
-}
-
 .radio-group {
   position: absolute;
   top: 40px;
