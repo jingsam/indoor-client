@@ -261,8 +261,7 @@ export default {
           properties: {
             deviceId: location.deviceId,
             createdAt: location.createdAt,
-            updatedAt: location.updatedAt,
-            count: 1
+            updatedAt: location.updatedAt
           }
         })
       })
@@ -287,22 +286,43 @@ export default {
           id: 'heat-layer',
           type: 'circle',
           source: 'heat-source',
+          filter: ['has', 'point_count'],
           layout: {
             visibility: this.view === '热区图' ? 'visible' : 'none'
           },
           paint: {
             'circle-radius': 40,
             'circle-color': {
-              property: 'count',
+              type: 'interval',
+              property: 'point_count',
               stops: [
                 [1, '#06f'],
-                [5, '#0f0'],
-                [10, '#f00']
+                [3, 'orange'],
+                [5, 'red']
               ]
             },
             'circle-blur': 1
           }
         }, 'wall-base')
+
+        const popup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false
+        })
+
+        map.on('mousemove', function (e) {
+          const features = map.queryRenderedFeatures(e.point, {layers: ['heat-layer']})
+          map.getCanvas().style.cursor = (features.length) ? 'pointer' : ''
+
+          if (!features.length) {
+            popup.remove()
+            return
+          }
+
+          popup.setLngLat(e.lngLat)
+            .setHTML(features[0].properties.point_count)
+            .addTo(map)
+        })
       }
     }
   }
