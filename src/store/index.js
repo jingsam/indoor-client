@@ -15,7 +15,7 @@ const store = new Vuex.Store({
 
   getters: {
     points (state) {
-      const features = state.locations.map((location) => {
+      const features = state.locations.map(location => {
         return {
           type: 'Feature',
           geometry: {
