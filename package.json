@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.15.3",
     "babel-runtime": "^6.0.0",
+    "echarts": "^3.4.0",
     "iview": "^0.9.12",
     "lodash": "^4.17.4",
     "mapbox-gl": "^0.32.1",

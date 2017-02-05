@@ -63,6 +63,7 @@ html, body {
   position: absolute;
   right: 0;
   top: 40px;
+  width: 300px;
   height: calc(100% - 40px);
 }
 </style>
