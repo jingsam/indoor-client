@@ -11,8 +11,7 @@
 
 <script>
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl'
-import groupBy from 'lodash/groupBy'
-import moment from 'moment'
+import {mapGetters} from 'vuex'
 
 let map
 
@@ -43,13 +42,20 @@ export default {
     map = new mapboxgl.Map(this.options)
     map.addControl(new mapboxgl.NavigationControl(), 'top-left')
     map.on('load', () => {
-      this.addScatterSource(this.$store.state.locations)
+      this.addScatterSource(this.points)
       this.addScatterLayer()
-      this.addTrackSource(this.$store.state.locations)
+      this.addTrackSource(this.lines)
       this.addTrackLayer()
-      this.addHeatSource(this.$store.state.locations)
+      this.addHeatSource(this.points)
       this.addHeatLayer()
     })
+  },
+
+  computed: {
+    ...mapGetters([
+      'points',
+      'lines'
+    ])
   },
 
   watch: {
@@ -73,35 +79,18 @@ export default {
       }
     },
 
-    '$store.state.locations' (locations) {
-      this.addScatterSource(locations)
-      this.addTrackSource(locations)
-      this.addHeatSource(locations)
+    points (value) {
+      this.addScatterSource(value)
+      this.addHeatSource(value)
+    },
+
+    lines (value) {
+      this.addTrackSource(value)
     }
   },
 
   methods: {
-    addScatterSource (locations) {
-      const data = {
-        type: 'FeatureCollection',
-        features: []
-      }
-
-      locations.forEach((location) => {
-        data.features.push({
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [location.lng, location.lat]
-          },
-          properties: {
-            deviceId: location.deviceId,
-            createdAt: location.createdAt,
-            updatedAt: location.updatedAt
-          }
-        })
-      })
-
+    addScatterSource (data) {
       const source = map.getSource('scatter-source')
       if (source) {
         source.setData(data)
@@ -151,49 +140,7 @@ export default {
       })
     },
 
-    addTrackSource (locations) {
-      const groupedLocations = groupBy(locations, location => {
-        return moment(location.createdAt).format('YYYY-MM-DD')
-      })
-
-      Object.keys(groupedLocations).forEach(function (key) {
-        groupedLocations[key] = groupBy(groupedLocations[key], location => {
-          return location.deviceId
-        })
-      })
-
-      const tracks = []
-      Object.keys(groupedLocations).forEach(function (key1) {
-        Object.keys(groupedLocations[key1]).forEach(function (key2) {
-          tracks.push({
-            date: key1,
-            deviceId: key2,
-            locations: groupedLocations[key1][key2].sort((loc1, loc2) => {
-              return Date.parse(loc1.createdAt) - Date.parse(loc2.createdAt)
-            })
-          })
-        })
-      })
-
-      const data = {
-        type: 'FeatureCollection',
-        features: []
-      }
-
-      tracks.forEach((track) => {
-        data.features.push({
-          type: 'Feature',
-          geometry: {
-            type: 'LineString',
-            coordinates: track.locations.map(location => [location.lng, location.lat])
-          },
-          properties: {
-            date: track.date,
-            deviceId: track.deviceId
-          }
-        })
-      })
-
+    addTrackSource (data) {
       const source = map.getSource('track-source')
       if (source) {
         source.setData(data)
@@ -245,27 +192,7 @@ export default {
       })
     },
 
-    addHeatSource (locations) {
-      const data = {
-        type: 'FeatureCollection',
-        features: []
-      }
-
-      locations.forEach((location) => {
-        data.features.push({
-          type: 'Feature',
-          geometry: {
-            type: 'Point',
-            coordinates: [location.lng, location.lat]
-          },
-          properties: {
-            deviceId: location.deviceId,
-            createdAt: location.createdAt,
-            updatedAt: location.updatedAt
-          }
-        })
-      })
-
+    addHeatSource (data) {
       const source = map.getSource('heat-source')
       if (source) {
         source.setData(data)
