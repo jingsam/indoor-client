@@ -43,9 +43,9 @@ export default {
 
 
 <style scoped>
-* {
+/** {
   outline: red solid 1px;
-}
+}*/
 
 div {
   width: 300px;
