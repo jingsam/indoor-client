@@ -201,7 +201,9 @@ export default {
           type: 'geojson',
           data: data,
           cluster: true,
-          clusterRadius: 20
+          clusterRadius: 20,
+          maxzoom: 22,
+          clusterMaxZoom: 21
         })
       }
     },
