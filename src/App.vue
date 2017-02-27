@@ -16,12 +16,13 @@ export default {
     return {
       accessToken: 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2l3dm9qdzRiMDAxMTJ6cGY2ZHlzOTRvNCJ9.WcJV0GCgk_4XXHa8cnmi_Q',
       options: {
-        style: 'mapbox://styles/maper/ciwvpz28c002z2qpqxdg2m5cy?optimize=true',
+        style: 'mapbox://styles/maper/cizfl4jyx007m2sji1ndyc4nl?optimize=true',
         attributionControl: false,
-        center: [112.527964, 0.009984],
-        zoom: 10.5,
+        center: [116.420298, 39.947635],
+        zoom: 20.5,
         bearing: -70,
-        pitch: 40
+        pitch: 40,
+        maxZoom: 22
       }
     }
   },
