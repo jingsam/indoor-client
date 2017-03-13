@@ -16,7 +16,7 @@ export default {
     return {
       accessToken: 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2l3dm9qdzRiMDAxMTJ6cGY2ZHlzOTRvNCJ9.WcJV0GCgk_4XXHa8cnmi_Q',
       options: {
-        style: 'mapbox://styles/maper/cizfl4jyx007m2sji1ndyc4nl?optimize=true',
+        style: 'http://101.200.63.93/api/v1/styles/indoor.json',
         attributionControl: false,
         center: [116.420298, 39.947635],
         zoom: 20.5,
